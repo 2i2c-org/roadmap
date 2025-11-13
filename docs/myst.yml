@@ -1,0 +1,19 @@
+version: 1
+project:
+  title: 2i2c Platform Roadmap
+  description: Development priorities and initiatives for 2i2c's platform
+  github: https://github.com/2i2c-org/roadmap
+
+site:
+  template: book-theme
+  nav:
+    - title: Roadmap
+      url: /index
+    - title: Completed
+      url: /completed
+  options:
+    logo: images/logo.png
+    logo_dark: images/logo-dark.png
+    logo_text: 2i2c Platform Roadmap
+    hide_toc: true
+    hide_outline: true

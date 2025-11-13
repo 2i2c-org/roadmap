@@ -1,0 +1,20 @@
+---
+title: {{ title | tojson }}
+status: {{ status | tojson }}
+issue_url: {{ issue_url | tojson }}
+labels: {{ labels | tojson }}
+---
+
+# {{ title }}
+
+{{ body }}
+
+---
+
+**Participate:** [Discuss on GitHub]({{ issue_url }})
+
+**Status:** {{ status }}
+
+**Labels:** {% for label in labels %}`{{ label }}`{% if not loop.last %} {% endif %}{% endfor %}
+
+**Back to:** [All Initiatives](../index.md)
