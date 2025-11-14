@@ -248,7 +248,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
         result = subprocess.run(
             ["gh", "issue", "view", issue_number,
              "--repo", repo,
-             "--json", "title,body,url,labels,updatedAt,closedAt,state,stateReason"],
+             "--json", "title,body,url,labels,updatedAt,closedAt,state,stateReason,trackedInIssues,trackedIssues"],
             capture_output=True,
             text=True,
             check=True
@@ -259,6 +259,17 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
         # Extract label names
         labels = [label["name"] for label in data.get("labels", [])]
 
+        # Extract tracked issues (sub-issues)
+        tracked_issues = []
+        for tracked in data.get("trackedIssues", []):
+            tracked_issues.append({
+                "number": tracked.get("number"),
+                "title": tracked.get("title"),
+                "url": tracked.get("url"),
+                "state": tracked.get("state"),
+                "repository": tracked.get("repository", {}).get("nameWithOwner", repo)
+            })
+
         return {
             "title": data.get("title", ""),
             "body": data.get("body", ""),
@@ -268,6 +279,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             "closed_at": data.get("closedAt", ""),
             "state": data.get("state", ""),
             "state_reason": data.get("stateReason", ""),
+            "tracked_issues": tracked_issues,
         }
 
     except subprocess.CalledProcessError as e:
