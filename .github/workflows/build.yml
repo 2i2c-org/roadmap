@@ -44,7 +44,7 @@ jobs:
 
       - name: Sync roadmap data
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.PAT }}
         run: uv tool run nox -s sync-and-docs
 
       - name: Upload Pages artifact
