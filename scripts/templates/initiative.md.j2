@@ -15,6 +15,6 @@ labels: {{ labels | tojson }}
 
 **Status:** {{ status }}
 
-**Labels:** {% for label in labels %}`{{ label }}`{% if not loop.last %} {% endif %}{% endfor %}
+{% if funding_labels %}**Funding Status:** {% for label in funding_labels %}`{{ label }}`{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}
 
 **Back to:** [All Initiatives](../index.md)

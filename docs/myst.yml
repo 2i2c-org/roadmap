@@ -3,6 +3,8 @@ project:
   title: 2i2c Platform Roadmap
   description: Development priorities and initiatives for 2i2c's platform
   github: https://github.com/2i2c-org/roadmap
+  plugins:
+    - sub-ref-plugin.mjs
 
 site:
   template: book-theme

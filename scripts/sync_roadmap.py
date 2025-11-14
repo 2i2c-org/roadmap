@@ -11,26 +11,21 @@ from jinja2 import Environment, FileSystemLoader
 from tqdm import tqdm
 
 
-def sanitize_title(title: str) -> str:
-    """Sanitize title for use as filename.
+def create_filename_from_github_url(repo: str, issue_number: str) -> str:
+    """Create filename from GitHub repository and issue number.
 
     Args:
-        title: Issue title
+        repo: Repository in format "owner/repo"
+        issue_number: Issue number
 
     Returns:
-        Sanitized filename (lowercase, alphanumeric + hyphens)
+        Filename in format "owner-repo-number"
     """
-    # Convert to lowercase
-    filename = title.lower()
+    # Replace slashes with hyphens
+    filename = repo.replace('/', '-')
 
-    # Replace spaces and special chars with hyphens
-    filename = re.sub(r'[^a-z0-9]+', '-', filename)
-
-    # Remove leading/trailing hyphens
-    filename = filename.strip('-')
-
-    # Collapse multiple hyphens
-    filename = re.sub(r'-+', '-', filename)
+    # Add issue number
+    filename = f"{filename}-{issue_number}"
 
     return filename
 
@@ -253,7 +248,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
         result = subprocess.run(
             ["gh", "issue", "view", issue_number,
              "--repo", repo,
-             "--json", "title,body,url,labels,updatedAt,closedAt"],
+             "--json", "title,body,url,labels,updatedAt,closedAt,state,stateReason"],
             capture_output=True,
             text=True,
             check=True
@@ -271,6 +266,8 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             "labels": labels,
             "updated_at": data.get("updatedAt", ""),
             "closed_at": data.get("closedAt", ""),
+            "state": data.get("state", ""),
+            "state_reason": data.get("stateReason", ""),
         }
 
     except subprocess.CalledProcessError as e:
@@ -279,6 +276,58 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
     except json.JSONDecodeError as e:
         print(f"Error parsing issue JSON: {e}", file=sys.stderr)
         return {}
+
+
+def filter_funding_labels(labels: List[str]) -> List[str]:
+    """Filter labels to only include funding-related ones.
+
+    Args:
+        labels: List of all label names
+
+    Returns:
+        List of funding-related labels (keywords only)
+    """
+    funding_keywords = {
+        "negotiating funding": "Negotiating funding",
+        "co-funded": "Co-funded",
+        "not yet funded": "Not yet funded",
+    }
+
+    filtered = []
+    for label in labels:
+        label_lower = label.lower()
+        for keyword, display_name in funding_keywords.items():
+            if keyword in label_lower:
+                filtered.append(display_name)
+                break  # Only add once per label
+
+    return filtered
+
+
+def remove_definition_of_done(body: str) -> str:
+    """Remove 'Definition of Done' section from issue body.
+
+    Args:
+        body: Full issue body
+
+    Returns:
+        Body with Definition of Done section removed
+    """
+    if not body:
+        return body
+
+    # Pattern to match "Definition of Done" header and content until next header or end
+    # This handles various markdown header formats (###, ##, etc.)
+    pattern = r'###?\s*Definition\s+of\s+Done.*?(?=\n###?\s+|\Z)'
+
+    # Remove the section (case-insensitive, dotall to match across lines)
+    cleaned = re.sub(pattern, '', body, flags=re.IGNORECASE | re.DOTALL)
+
+    # Clean up extra whitespace
+    cleaned = re.sub(r'\n{3,}', '\n\n', cleaned)
+    cleaned = cleaned.strip()
+
+    return cleaned
 
 
 def get_short_description(body: str, max_words: int = 150) -> str:
@@ -297,17 +346,40 @@ def get_short_description(body: str, max_words: int = 150) -> str:
     # Split into paragraphs
     paragraphs = body.split('\n\n')
 
-    # Find first paragraph that isn't a header
+    # Find first paragraph that isn't a header or task list
     first_para = ""
     for para in paragraphs:
         para = para.strip()
         # Skip if it's a markdown header (starts with #)
-        if not para.startswith('#'):
-            first_para = para
-            break
+        if para.startswith('#'):
+            continue
+        # Skip if it's a task list item (starts with - [ ] or - [x])
+        if para.startswith('- ['):
+            continue
+        # Skip if it's a list item
+        if para.startswith('-') or para.startswith('*') or para.startswith('1.'):
+            continue
+        first_para = para
+        break
 
     if not first_para:
         return "No description available."
+
+    # Clean up markdown formatting that could break tables
+    # Remove task list checkboxes
+    first_para = re.sub(r'- \[[x ]\]\s*', '', first_para)
+    # Remove links but keep text: [text](url) -> text
+    first_para = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', first_para)
+    # Remove bold/italic markers
+    first_para = re.sub(r'\*\*([^\*]+)\*\*', r'\1', first_para)
+    first_para = re.sub(r'\*([^\*]+)\*', r'\1', first_para)
+    # Remove pipe characters that would break table
+    first_para = first_para.replace('|', '/')
+    # Remove newlines within the paragraph
+    first_para = first_para.replace('\n', ' ')
+    # Clean up multiple spaces
+    first_para = re.sub(r'\s+', ' ', first_para)
+    first_para = first_para.strip()
 
     # Limit to max_words
     words = first_para.split()
@@ -349,23 +421,23 @@ def generate_roadmap_table(data: Dict[str, Any], output_dir: Path):
     output_file = data_dir / "roadmap-table.md"
 
     lines = []
-    lines.append("| Status | Title | Description | Issue | Labels |")
-    lines.append("|--------|-------|-------------|-------|--------|")
+    lines.append("| Status | Title | Description | Issue | Funding Status |")
+    lines.append("|--------|-------|-------------|-------|----------------|")
 
     # Write in-flight initiatives (in order from project board)
     for item in data.get('in_flight', []):
-        labels = ', '.join(f"`{label}`" for label in item['labels'])
+        funding_labels = ', '.join(f"`{label}`" for label in item.get('funding_labels', []))
         lines.append(
             f"| 🚀 In Flight | [{item['title']}](initiative/{item['filename']}.md) | "
-            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {labels} |"
+            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {funding_labels} |"
         )
 
     # Write upcoming initiatives (in order from project board)
     for item in data.get('upcoming', []):
-        labels = ', '.join(f"`{label}`" for label in item['labels'])
+        funding_labels = ', '.join(f"`{label}`" for label in item.get('funding_labels', []))
         lines.append(
             f"| 📋 Upcoming | [{item['title']}](initiative/{item['filename']}.md) | "
-            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {labels} |"
+            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {funding_labels} |"
         )
 
     output_file.write_text('\n'.join(lines))
@@ -383,12 +455,12 @@ def generate_completed_table(data: Dict[str, Any], output_dir: Path):
     output_file = data_dir / "completed-table.md"
 
     lines = []
-    lines.append("| Completed | Title | Description | Issue | Labels |")
-    lines.append("|-----------|-------|-------------|-------|--------|")
+    lines.append("| Completed | Title | Description | Issue | Funding Status |")
+    lines.append("|-----------|-------|-------------|-------|----------------|")
 
     # Write completed initiatives (sorted by closed date, recent first)
     for item in data.get('done', []):
-        labels = ', '.join(f"`{label}`" for label in item['labels'])
+        funding_labels = ', '.join(f"`{label}`" for label in item.get('funding_labels', []))
         # Format closed date if available
         closed_date = ""
         if item.get('closed_at'):
@@ -400,7 +472,7 @@ def generate_completed_table(data: Dict[str, Any], output_dir: Path):
 
         lines.append(
             f"| ✅ {closed_date} | [{item['title']}](initiative/{item['filename']}.md) | "
-            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {labels} |"
+            f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {funding_labels} |"
         )
 
     output_file.write_text('\n'.join(lines))
@@ -459,6 +531,12 @@ def sync_roadmap():
         if not details:
             continue
 
+        # Skip issues closed as "not planned" or "duplicate"
+        state_reason = details.get("state_reason", "")
+        if state_reason in ["NOT_PLANNED", "DUPLICATE"]:
+            print(f"Skipping issue #{issue_number} (closed as {state_reason})")
+            continue
+
         # Check for platform initiative marker (in title or labels)
         if not is_platform_initiative(details["title"], details.get("labels", [])):
             continue
@@ -468,10 +546,12 @@ def sync_roadmap():
         cleaned_title = clean_title_for_display(original_title)
         details["status"] = item["status"]
         details["title"] = cleaned_title  # Clean for display
-        details["filename"] = sanitize_title(cleaned_title)  # Use cleaned title for filename
+        details["filename"] = create_filename_from_github_url(repo, str(issue_number))  # Use org-repo-number pattern
         details["issue_number"] = issue_number
         details["issue_url"] = details.get("url", "")
+        details["body"] = remove_definition_of_done(details.get("body", ""))  # Remove Definition of Done section
         details["short_description"] = get_short_description(details["body"])
+        details["funding_labels"] = filter_funding_labels(details.get("labels", []))  # Filter to funding labels only
 
         detailed_initiatives.append(details)
 
