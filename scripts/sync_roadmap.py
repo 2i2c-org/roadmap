@@ -239,6 +239,50 @@ def clean_title_for_display(title: str) -> str:
     return cleaned if cleaned else title  # Fallback to original if everything was removed
 
 
+def fetch_sub_issues(issue_number: int, repo: str) -> List[Dict[str, Any]]:
+    """Fetch sub-issues for a parent issue using GitHub REST API.
+
+    Args:
+        issue_number: The parent issue number
+        repo: Repository in format "owner/repo"
+
+    Returns:
+        List of sub-issue dicts with keys: number, title, html_url, state
+    """
+    try:
+        # GitHub REST API endpoint for sub-issues
+        result = subprocess.run(
+            ["gh", "api", f"/repos/{repo}/issues/{issue_number}/sub_issues"],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        sub_issues_data = json.loads(result.stdout)
+
+        # Extract relevant fields
+        sub_issues = []
+        for sub in sub_issues_data:
+            sub_issues.append({
+                "number": sub["number"],
+                "title": sub["title"],
+                "html_url": sub["html_url"],
+                "state": sub["state"]
+            })
+
+        return sub_issues
+
+    except subprocess.CalledProcessError:
+        # API might return 404 if no sub-issues or endpoint not available
+        # Treat as no sub-issues (this is normal)
+        return []
+    except json.JSONDecodeError as e:
+        print(f"  Warning: Error parsing sub-issues JSON for {issue_number}: {e}", file=sys.stderr)
+        return []
+    except Exception as e:
+        print(f"  Warning: Error fetching sub-issues for {issue_number}: {e}", file=sys.stderr)
+        return []
+
+
 def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
     """Fetch full details for a GitHub issue.
 
@@ -264,6 +308,9 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
         # Extract label names
         labels = [label["name"] for label in data.get("labels", [])]
 
+        # Fetch sub-issues for this issue
+        sub_issues = fetch_sub_issues(int(issue_number), repo)
+
         return {
             "title": data.get("title", ""),
             "body": data.get("body", ""),
@@ -271,6 +318,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             "labels": labels,
             "updated_at": data.get("updatedAt", ""),
             "closed_at": data.get("closedAt", ""),
+            "sub_issues": sub_issues,
         }
 
     except subprocess.CalledProcessError as e:

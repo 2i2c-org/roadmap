@@ -5,6 +5,14 @@ issue_url: {{ issue_url | tojson }}
 labels: {{ labels | tojson }}
 ---
 
+{% if sub_issues and sub_issues|length > 0 %}
+:::{dropdown} Sub-Issues ({{ sub_issues|length }})
+{% for sub in sub_issues -%}
+- [{% if sub.state == 'closed' %}x{% else %} {% endif %}] [{{ sub.title }}]({{ sub.html_url }})
+{% endfor -%}
+:::
+
+{% endif %}
 # {{ title }}
 
 {{ body }}
