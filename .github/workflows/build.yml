@@ -10,6 +10,7 @@ on:
       - main
 env:
   BASE_URL: /${{ github.event.repository.name }}
+  GH_TOKEN: ${{ secrets.PAT }}
 
 permissions:
   contents: write
@@ -43,8 +44,6 @@ jobs:
           node-version: '20'
 
       - name: Sync roadmap data
-        env:
-          GH_TOKEN: ${{ secrets.PAT }}
         run: uv tool run nox -s sync-and-docs
 
       - name: Copy MyST public assets
