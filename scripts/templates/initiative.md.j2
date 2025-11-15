@@ -5,6 +5,7 @@ issue_url: {{ issue_url | tojson }}
 labels: {{ labels | tojson }}
 ---
 
+
 # {{ title }}
 
 {{ body }}
@@ -19,7 +20,7 @@ labels: {{ labels | tojson }}
 
 ---
 
-**Participate:** [Discuss on GitHub]({{ issue_url }})
+**Participate:** [{{ issue_url | replace("https://", "") }}]({{ issue_url }})
 
 **Status:** {{ status }}
 

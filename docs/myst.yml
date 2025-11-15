@@ -5,6 +5,7 @@ project:
   github: https://github.com/2i2c-org/roadmap
   plugins:
     - sub-ref-plugin.mjs
+    - github-issue-link-plugin.mjs
 
 site:
   template: book-theme
@@ -19,3 +20,4 @@ site:
     logo_text: 2i2c Platform Roadmap
     hide_toc: true
     hide_outline: true
+    style: styles/github-issue-links.css

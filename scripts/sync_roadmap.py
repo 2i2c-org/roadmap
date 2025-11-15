@@ -24,8 +24,8 @@ def create_filename_from_github_url(repo: str, issue_number: str) -> str:
     # Replace slashes with hyphens
     filename = repo.replace('/', '-')
 
-    # Add issue number
-    filename = f"{filename}-{issue_number}"
+    # Add issue number with prefix to avoid conflicts with org names
+    filename = f"issue-{filename}-{issue_number}"
 
     return filename
 
@@ -244,49 +244,119 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
     Returns:
         Dict with issue details (title, body, url, labels, etc.)
     """
+    query = """
+    query($owner: String!, $repo: String!, $number: Int!) {
+      repository(owner: $owner, name: $repo) {
+        issue(number: $number) {
+          title
+          body
+          url
+          updatedAt
+          closedAt
+          state
+          stateReason
+          labels(first: 50) {
+            nodes {
+              name
+            }
+          }
+          trackedIssues(first: 100) {
+            nodes {
+              number
+              title
+              url
+              state
+              repository {
+                nameWithOwner
+              }
+            }
+          }
+          subIssues(first: 100) {
+            nodes {
+              number
+              title
+              url
+              state
+              repository {
+                nameWithOwner
+              }
+            }
+          }
+        }
+      }
+    }
+    """
+
+    owner, repo_name = repo.split("/", 1)
+
     try:
         result = subprocess.run(
-            ["gh", "issue", "view", issue_number,
-             "--repo", repo,
-             "--json", "title,body,url,labels,updatedAt,closedAt,state,stateReason,trackedInIssues,trackedIssues"],
+            ["gh", "api", "graphql",
+             "-f", f"query={query}",
+             "-F", f"owner={owner}",
+             "-F", f"repo={repo_name}",
+             "-F", f"number={int(issue_number)}"],
             capture_output=True,
             text=True,
             check=True
         )
 
         data = json.loads(result.stdout)
+        issue = data.get("data", {}).get("repository", {}).get("issue")
+        if not issue:
+            print(f"Issue {repo}#{issue_number} not found in API response", file=sys.stderr)
+            return {}
 
         # Extract label names
-        labels = [label["name"] for label in data.get("labels", [])]
+        labels = [label["name"] for label in issue.get("labels", {}).get("nodes", []) if "name" in label]
 
-        # Extract tracked issues (sub-issues)
+        # Extract tracked issues (sub-issues) from both GitHub tracking and sub-issue APIs
         tracked_issues = []
-        for tracked in data.get("trackedIssues", []):
+        seen = set()
+        for tracked in issue.get("trackedIssues", {}).get("nodes", []):
+            key = (tracked.get("repository", {}).get("nameWithOwner", repo), tracked.get("number"))
+            if key in seen:
+                continue
+            seen.add(key)
             tracked_issues.append({
                 "number": tracked.get("number"),
                 "title": tracked.get("title"),
                 "url": tracked.get("url"),
                 "state": tracked.get("state"),
-                "repository": tracked.get("repository", {}).get("nameWithOwner", repo)
+                "repository": tracked.get("repository", {}).get("nameWithOwner", repo),
+            })
+
+        for sub_issue in issue.get("subIssues", {}).get("nodes", []):
+            key = (sub_issue.get("repository", {}).get("nameWithOwner", repo), sub_issue.get("number"))
+            if key in seen:
+                continue
+            seen.add(key)
+            tracked_issues.append({
+                "number": sub_issue.get("number"),
+                "title": sub_issue.get("title"),
+                "url": sub_issue.get("url"),
+                "state": sub_issue.get("state"),
+                "repository": sub_issue.get("repository", {}).get("nameWithOwner", repo),
             })
 
         return {
-            "title": data.get("title", ""),
-            "body": data.get("body", ""),
-            "url": data.get("url", ""),
+            "title": issue.get("title", ""),
+            "body": issue.get("body", ""),
+            "url": issue.get("url", ""),
             "labels": labels,
-            "updated_at": data.get("updatedAt", ""),
-            "closed_at": data.get("closedAt", ""),
-            "state": data.get("state", ""),
-            "state_reason": data.get("stateReason", ""),
+            "updated_at": issue.get("updatedAt", ""),
+            "closed_at": issue.get("closedAt", ""),
+            "state": issue.get("state", ""),
+            "state_reason": issue.get("stateReason", ""),
             "tracked_issues": tracked_issues,
         }
 
     except subprocess.CalledProcessError as e:
-        print(f"Error fetching issue {issue_number}: {e}", file=sys.stderr)
+        print(f"Error fetching issue {issue_number} via GraphQL: {e}", file=sys.stderr)
+        print(f"Stdout: {e.stdout}\nStderr: {e.stderr}", file=sys.stderr)
         return {}
     except json.JSONDecodeError as e:
-        print(f"Error parsing issue JSON: {e}", file=sys.stderr)
+        print(f"Error parsing issue JSON for {issue_number}: {e}", file=sys.stderr)
         return {}
 
 
@@ -584,6 +654,10 @@ def sync_roadmap():
     docs_dir = Path(__file__).parent.parent / "docs"
     initiative_dir = docs_dir / "initiative"
     initiative_dir.mkdir(parents=True, exist_ok=True)
+
+    # Remove old initiative pages to prevent stale filenames
+    for existing in initiative_dir.glob("*.md"):
+        existing.unlink()
 
     # Generate initiative pages
     print(f"Generating {len(detailed_initiatives)} initiative pages...")

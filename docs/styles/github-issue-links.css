@@ -1,0 +1,66 @@
+a.github-issue-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding-left: 1.4rem;
+  --github-issue-indicator-color: #adb5bd;
+}
+
+a.github-issue-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 0.125rem solid var(--github-issue-indicator-color);
+  background: transparent;
+  box-sizing: border-box;
+}
+
+a.github-issue-link::after {
+  content: '';
+  position: absolute;
+  left: 0.2rem;
+  top: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  transform: translateY(-50%);
+  background: var(--github-issue-indicator-color);
+  opacity: 0;
+}
+
+a.github-issue-link--open {
+  --github-issue-indicator-color: #2fa24b;
+}
+
+a.github-issue-link--open::after {
+  opacity: 1;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6.1 1.5h3.8v13H6.1z'/%3E%3Cpath fill='white' d='M1.5 6.1h13v3.8h-13z'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6.1 1.5h3.8v13H6.1z'/%3E%3Cpath fill='white' d='M1.5 6.1h13v3.8h-13z'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+a.github-issue-link--closed {
+  --github-issue-indicator-color: #9b6dff;
+}
+
+a.github-issue-link--closed::after {
+  opacity: 1;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5 6.8 12l5.7-7.2'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5 6.8 12l5.7-7.2'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+a.github-issue-link--closed[data-state-reason='duplicate'],
+a.github-issue-link--closed[data-state-reason='not_planned'],
+a.github-issue-link--closed[data-state-reason='wontfix'] {
+  --github-issue-indicator-color: #8c8c8c;
+}
+
+a.github-issue-link--closed[data-state-reason='duplicate']::after,
+a.github-issue-link--closed[data-state-reason='not_planned']::after,
+a.github-issue-link--closed[data-state-reason='wontfix']::after {
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' d='M4 4l8 8'/%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' d='M12 4L4 12'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' d='M4 4l8 8'/%3E%3Cpath fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' d='M12 4L4 12'/%3E%3C/svg%3E") no-repeat center / contain;
+}
