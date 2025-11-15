@@ -140,6 +140,7 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
             return text
         return (
             text.replace("|", "/")
+            .replace("_", r"\_")
             .replace("[", r"\[")
             .replace("]", r"\]")
         )
