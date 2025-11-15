@@ -104,7 +104,7 @@ function escapeGraphQLString(value) {
 
 async function fetchIssuesGraphQL(requests) {
   if (!requests.length) return;
-  const token = process?.env?.GITHUB_TOKEN;
+  const token = process?.env?.GH_TOKEN;
   const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
