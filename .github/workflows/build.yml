@@ -47,6 +47,11 @@ jobs:
           GH_TOKEN: ${{ secrets.PAT }}
         run: uv tool run nox -s sync-and-docs
 
+      - name: Copy MyST public assets
+        run: |
+          mkdir -p docs/_build/html
+          cp -R docs/_build/site/public/. docs/_build/html/ || true
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

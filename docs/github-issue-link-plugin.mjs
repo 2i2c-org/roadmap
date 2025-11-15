@@ -1,3 +1,6 @@
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+
 /**
  * Simplified MyST transform that swaps bare GitHub issue links
  * for styled links annotated with the issue title and state.
@@ -5,6 +8,11 @@
 const ISSUE_LINK_REGEX =
   /^https:\/\/github\.com\/([^/]+\/[^/]+)\/issues\/(\d+)(?:[/?#].*)?$/;
 const issueCache = new Map();
+const CACHE_DIR =
+  process.env.GITHUB_ISSUE_CACHE_DIR || path.join(process.cwd(), '_build');
+const CACHE_FILE = path.join(CACHE_DIR, 'github-issue-cache.json');
+let cacheReady;
+let cacheDirty = false;
 
 function visitLinks(node, callback) {
   if (!node) return;
@@ -16,7 +24,38 @@ function visitLinks(node, callback) {
   }
 }
 
+async function loadPersistentCache() {
+  if (cacheReady) {
+    return cacheReady;
+  }
+  cacheReady = (async () => {
+    try {
+      const data = await readFile(CACHE_FILE, 'utf8');
+      const parsed = JSON.parse(data);
+      Object.entries(parsed).forEach(([key, value]) => {
+        issueCache.set(key, value);
+      });
+    } catch (error) {
+      if (error.code !== 'ENOENT') {
+        console.warn(
+          `[github-issue-link-plugin] Failed to read cache ${CACHE_FILE}: ${error.message}`,
+        );
+      }
+    }
+  })();
+  return cacheReady;
+}
+
+async function savePersistentCache() {
+  if (!cacheDirty) return;
+  await mkdir(CACHE_DIR, { recursive: true });
+  const payload = Object.fromEntries(issueCache.entries());
+  await writeFile(CACHE_FILE, JSON.stringify(payload, null, 2), 'utf8');
+  cacheDirty = false;
+}
+
 async function fetchIssue(repoSlug, issueNumber) {
+  await loadPersistentCache();
   const cacheKey = `${repoSlug}#${issueNumber}`;
   if (issueCache.has(cacheKey)) {
     return issueCache.get(cacheKey);
@@ -44,6 +83,7 @@ async function fetchIssue(repoSlug, issueNumber) {
     state_reason: data.state_reason || '',
   };
   issueCache.set(cacheKey, details);
+  cacheDirty = true;
   return details;
 }
 
@@ -99,6 +139,7 @@ const githubIssueLinkTransform = {
         }
       });
       await Promise.all(tasks);
+      await savePersistentCache();
     };
   },
 };
