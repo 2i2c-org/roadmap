@@ -1,9 +1,8 @@
 # 2i2c's Roadmap
 
-> **WORK IN PROGRESS**
-> This is a rough draft, so calibrate your expectations accordingly!
+This website serves as a way for 2i2c's team to share its priorities, interests, and product activity with communities it collaborates with. Find the site here:
 
-This repository serves as a way for 2i2c's team to share its priorities and interests for development with the broader community.
+https://2i2c.org/roadmap
 
 ## Goals
 
