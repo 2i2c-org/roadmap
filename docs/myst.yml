@@ -4,8 +4,9 @@ project:
   description: Development priorities and initiatives for 2i2c's platform
   github: https://github.com/2i2c-org/roadmap
   plugins:
-    - sub-ref-plugin.mjs
-    - github-issue-link-plugin.mjs
+    - plugins/sub-ref/plugin.mjs
+    - plugins/github-issue-links/plugin.mjs
+    - plugins/github-handle-links/plugin.mjs
 
 site:
   template: book-theme
@@ -14,10 +15,13 @@ site:
       url: /index
     - title: Completed
       url: /completed
+    - title: Activity Log
+      url: /activity
   options:
+    folders: true
     logo: images/logo.png
     logo_dark: images/logo-dark.png
     logo_text: 2i2c Platform Roadmap
     hide_toc: true
     hide_outline: true
-    style: styles/github-issue-links.css
+    style: plugins/github-issue-links/github-issue-links.css

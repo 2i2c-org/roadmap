@@ -266,6 +266,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
               title
               url
               state
+              updatedAt
               repository {
                 nameWithOwner
               }
@@ -277,8 +278,29 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
               title
               url
               state
+              updatedAt
               repository {
                 nameWithOwner
+              }
+            }
+          }
+          timelineItems(first: 100, itemTypes: CONNECTED_EVENT) {
+            nodes {
+              ... on ConnectedEvent {
+                subject {
+                  __typename
+                  ... on PullRequest {
+                    number
+                    title
+                    url
+                    state
+                    updatedAt
+                    mergedAt
+                    repository {
+                      nameWithOwner
+                    }
+                  }
+                }
               }
             }
           }
@@ -321,9 +343,11 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             tracked_issues.append({
                 "number": tracked.get("number"),
                 "title": tracked.get("title"),
-                "url": tracked.get("url"),
+                "issue_url": tracked.get("url"),
                 "state": tracked.get("state"),
+                "updated_at": tracked.get("updatedAt", ""),
                 "repository": tracked.get("repository", {}).get("nameWithOwner", repo),
+                "type": "issue",
             })
 
         for sub_issue in issue.get("subIssues", {}).get("nodes", []):
@@ -334,9 +358,36 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             tracked_issues.append({
                 "number": sub_issue.get("number"),
                 "title": sub_issue.get("title"),
-                "url": sub_issue.get("url"),
+                "issue_url": sub_issue.get("url"),
                 "state": sub_issue.get("state"),
+                "updated_at": sub_issue.get("updatedAt", ""),
                 "repository": sub_issue.get("repository", {}).get("nameWithOwner", repo),
+                "type": "issue",
+            })
+
+        linked_pull_requests = []
+        for node in issue.get("timelineItems", {}).get("nodes", []):
+            subject = node.get("subject") or {}
+            if subject.get("__typename") != "PullRequest":
+                continue
+            linked_pull_requests.append({
+                "number": subject.get("number"),
+                "title": subject.get("title"),
+                "issue_url": subject.get("url"),
+                "state": subject.get("state"),
+                "updated_at": subject.get("updatedAt", ""),
+                "repository": subject.get("repository", {}).get("nameWithOwner", repo),
+            })
+
+        for pr in linked_pull_requests:
+            tracked_issues.append({
+                "number": pr.get("number"),
+                "title": pr.get("title"),
+                "issue_url": pr.get("issue_url"),
+                "state": pr.get("state"),
+                "updated_at": pr.get("updated_at", ""),
+                "repository": pr.get("repository", repo),
+                "type": "pull_request",
             })
 
         return {
@@ -349,6 +400,7 @@ def fetch_issue_details(repo: str, issue_number: str) -> Dict[str, Any]:
             "state": issue.get("state", ""),
             "state_reason": issue.get("stateReason", ""),
             "tracked_issues": tracked_issues,
+            "linked_pull_requests": linked_pull_requests,
         }
 
     except subprocess.CalledProcessError as e:
@@ -678,6 +730,14 @@ def sync_roadmap():
         "done": done,
     }
     generate_completed_table(completed_data, docs_dir)
+
+    activity_script = Path(__file__).parent / "generate_activity_log.py"
+    if activity_script.exists():
+        print("Generating activity log table...")
+        subprocess.run(
+            [sys.executable, str(activity_script)],
+            check=True,
+        )
 
     print("Sync complete!")
     print(f"  - {len(in_flight)} initiatives in flight")

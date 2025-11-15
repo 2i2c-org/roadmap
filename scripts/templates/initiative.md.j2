@@ -13,7 +13,8 @@ labels: {{ labels | tojson }}
 {% if tracked_issues %}
 ```{dropdown} Sub-issues
 {% for issue in tracked_issues %}
-- [{% if issue.state == "CLOSED" %}x{% else %} {% endif %}] [#{{ issue.number }}]({{ issue.url }}) - {{ issue.title }}{% if issue.repository != "2i2c-org/infrastructure" %} ({{ issue.repository }}){% endif %}
+{% set prefix = "PR #" ~ issue.number if issue.type == "pull_request" else "#" ~ issue.number %}
+- [{% if issue.state == "CLOSED" %}x{% else %} {% endif %}] [{{ prefix }}]({{ issue.issue_url }}) - {{ issue.title }}{% if issue.repository != "2i2c-org/infrastructure" %} ({{ issue.repository }}){% endif %}
 {% endfor %}
 ```
 {% endif %}
