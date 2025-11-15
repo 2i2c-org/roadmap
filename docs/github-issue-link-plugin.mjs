@@ -64,7 +64,7 @@ function cacheIssueDetails(repoSlug, issueNumber, details) {
 async function fetchIssueREST(repoSlug, issueNumber) {
   const apiUrl = `https://api.github.com/repos/${repoSlug}/issues/${issueNumber}`;
   const headers = { Accept: 'application/vnd.github+json' };
-  const token = process?.env?.GITHUB_TOKEN;
+  const token = process?.env?.GH_TOKEN;
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
