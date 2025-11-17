@@ -31,3 +31,10 @@ def sync_and_docs(session):
     """Sync roadmap then build docs (for CI)."""
     sync(session)
     docs(session)
+
+@nox.session
+def clean(session):
+    """Remove MyST build assets and start fresh."""
+    session.install("-r", "requirements.txt")
+    with session.chdir("docs"):
+        session.run("myst", "clean", "-y", "-a")

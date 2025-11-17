@@ -7,7 +7,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple, Any
 from urllib.parse import urlparse
-
 from sync_roadmap import fetch_issue_details, clean_title_for_display
 
 
@@ -106,9 +105,9 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
             .replace("]", r"\]")
         )
 
-    def issue_label(repo: str, number):
-        repo_clean = cleanup(repo or "")
-        return f"{repo_clean}#{number}" if number else repo_clean
+    def issue_label(repo: str, number, url: str) -> str:
+        label = f"{repo}#{number}" if number else repo
+        return f"[{label}]({url})"
 
     def iter_entries():
         for initiative in initiatives:
@@ -120,8 +119,9 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
                 "title": cleanup(initiative["title"]),
                 "link": initiative["local_link"],
                 "parent": None,
-                "issue": issue_label(initiative["repo"], initiative["issue_number"]),
-                "url": initiative["issue_url"],
+                "issue": issue_label(
+                    initiative["repo"], initiative["issue_number"], initiative["issue_url"]
+                ),
             }
             for tracked in initiative.get("tracked_issues", []):
                 issue_url = tracked.get("issue_url") or tracked.get("url", "")
@@ -137,8 +137,7 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
                     "title": title,
                     "link": issue_url,
                     "parent": (cleanup(initiative["title"]), initiative["local_link"]),
-                    "issue": issue_label(repo_slug, number),
-                    "url": issue_url,
+                    "issue": issue_label(repo_slug, number, issue_url),
                 }
 
     entries = sorted(
@@ -158,14 +157,13 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
             title, link = entry["parent"]
             parent_part = f"[{title}]({link})"
         lines.append(
-            "| {updated} | {etype} | [{title}]({link}) | {parent} | [{issue}]({url}) |".format(
+            "| {updated} | {etype} | [{title}]({link}) | {parent} | {issue} |".format(
                 updated=format_timestamp(entry.get("updated", "")),
                 etype=entry["type"],
                 title=entry["title"],
                 link=entry["link"],
                 parent=parent_part,
                 issue=entry["issue"],
-                url=entry["url"],
             )
         )
 
