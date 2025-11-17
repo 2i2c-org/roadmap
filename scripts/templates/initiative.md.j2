@@ -17,11 +17,11 @@ labels: {{ labels | tojson }}
 ```
 {% endif %}
 
+**Participate in the issue:** [{{ issue_url | replace("https://", "") }}]({{ issue_url }})
+
 {{ body }}
 
 ---
-
-**Participate:** [{{ issue_url | replace("https://", "") }}]({{ issue_url }})
 
 **Status:** {{ status }}
 
