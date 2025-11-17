@@ -21,12 +21,10 @@ def create_filename_from_github_url(repo: str, issue_number: str) -> str:
     Returns:
         Filename in format "owner-repo-number"
     """
-    # Replace slashes with hyphens
-    filename = repo.replace('/', '-')
-
-    # Add issue number with prefix to avoid conflicts with org names
-    filename = f"issue-{filename}-{issue_number}"
-
+    # Use only the repository name to keep slugs short
+    repo_name = repo.split('/', 1)[-1]
+    safe_repo = re.sub(r'[^A-Za-z0-9-]+', '-', repo_name).strip('-')
+    filename = f"{safe_repo}-{issue_number}"
     return filename
 
 
@@ -484,16 +482,19 @@ def get_short_description(body: str, max_words: int = 150) -> str:
     first_para = ""
     for para in paragraphs:
         para = para.strip()
+        plain = re.sub(r'<[^>]+>', '', para).strip()
+        if not plain:
+            continue
         # Skip if it's a markdown header (starts with #)
-        if para.startswith('#'):
+        if plain.startswith('#'):
             continue
         # Skip if it's a task list item (starts with - [ ] or - [x])
-        if para.startswith('- ['):
+        if plain.startswith('- ['):
             continue
         # Skip if it's a list item
-        if para.startswith('-') or para.startswith('*') or para.startswith('1.'):
+        if plain.startswith('- ') or plain.startswith('* ') or plain.startswith('1.'):
             continue
-        first_para = para
+        first_para = plain
         break
 
     if not first_para:

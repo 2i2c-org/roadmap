@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Any
 from urllib.parse import urlparse
 
-from sync_roadmap import fetch_issue_details
+from sync_roadmap import fetch_issue_details, clean_title_for_display
 
 
 FRONTMATTER_PATTERN = re.compile(r"^([^:]+):\s*(.*)$")
@@ -98,43 +98,6 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
         status_lower = status.lower()
         return "in flight" in status_lower or "in progress" in status_lower
 
-    groups = []
-    for initiative in initiatives:
-        if not is_in_progress(initiative.get("status", "")):
-            continue
-        sub_entries = []
-        for tracked in initiative.get("tracked_issues", []):
-            issue_url = tracked.get("issue_url") or tracked.get("url", "")
-            repo_slug = tracked.get("repository", "") or initiative["repo"]
-            sub_entries.append(
-                {
-                    "title": tracked.get("title", ""),
-                    "issue_url": issue_url,
-                    "repo": repo_slug,
-                    "issue_number": tracked.get("number"),
-                    "state": tracked.get("state", ""),
-                    "updated_at": tracked.get("updated_at", ""),
-                    "type": tracked.get("type", "issue"),
-                }
-            )
-        sub_entries.sort(
-            key=lambda s: parse_timestamp(s.get("updated_at", "")), reverse=True
-        )
-        latest = parse_timestamp(initiative.get("updated_at", ""))
-        if sub_entries:
-            latest = max(
-                [latest] + [parse_timestamp(s.get("updated_at", "")) for s in sub_entries]
-            )
-        groups.append(
-            {
-                "latest": latest,
-                "initiative": initiative,
-                "sub_entries": sub_entries,
-            }
-        )
-
-    groups.sort(key=lambda g: g["latest"], reverse=True)
-
     def cleanup(text: str) -> str:
         if not isinstance(text, str):
             return text
@@ -145,48 +108,74 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
             .replace("]", r"\]")
         )
 
+    entries = []
+    for initiative in initiatives:
+        if not is_in_progress(initiative.get("status", "")):
+            continue
+        entries.append(
+            {
+                "updated": initiative.get("updated_at", ""),
+                "type": "Initiative",
+                "item_title": initiative["title"],
+                "item_link": initiative["local_link"],
+                "parent_title": None,
+                "parent_link": None,
+                "state": initiative.get("state", ""),
+                "issue_label": f"{initiative['repo']}#{initiative['issue_number']}",
+                "issue_url": initiative["issue_url"],
+            }
+        )
+        for tracked in initiative.get("tracked_issues", []):
+            issue_url = tracked.get("issue_url") or tracked.get("url", "")
+            repo_slug = tracked.get("repository", "") or initiative["repo"]
+            number = tracked.get("number")
+            title = clean_title_for_display(tracked.get("title", ""))
+            title = title.replace(f"#{number}", "").strip()
+            title = cleanup(title.strip("-–—: "))
+            entries.append(
+                {
+                    "updated": tracked.get("updated_at", ""),
+                    "type": "Pull request"
+                    if tracked.get("type") == "pull_request"
+                    else "Sub-issue",
+                    "item_title": title,
+                    "item_link": issue_url,
+                    "parent_title": initiative["title"],
+                    "parent_link": initiative["local_link"],
+                    "state": tracked.get("state", ""),
+                    "issue_label": f"{repo_slug}#{number}" if number else repo_slug,
+                    "issue_url": issue_url,
+                }
+            )
+
+    entries.sort(
+        key=lambda e: parse_timestamp(e.get("updated", "")),
+        reverse=True,
+    )
+
     lines = [
         "| Last updated | Type | Item | Parent Initiative | State | Issue |",
         "|--------------|------|------|-------------------|-------|-------|",
     ]
 
-    for group in groups:
-        initiative = group["initiative"]
-        parent_updated = initiative.get("updated_at", "")
+    for entry in entries:
+        parent_part = (
+            "—"
+            if not entry["parent_title"]
+            else f"[{cleanup(entry['parent_title'])}]({entry['parent_link']})"
+        )
         lines.append(
-            "| {updated} | Initiative | [{title}]({link}) | — | {state} | [{issue}]({url}) |".format(
-                updated=format_timestamp(parent_updated),
-                title=cleanup(initiative["title"]),
-                link=initiative["local_link"],
-                state=cleanup(initiative.get("state", "").title()),
-                issue=f"{initiative['repo']}#{initiative['issue_number']}",
-                url=initiative["issue_url"],
+            "| {updated} | {etype} | [{title}]({link}) | {parent} | {state} | [{issue}]({url}) |".format(
+                updated=format_timestamp(entry.get("updated", "")),
+                etype=entry["type"],
+                title=cleanup(entry["item_title"]),
+                link=entry["item_link"],
+                parent=parent_part,
+                state=cleanup(entry.get("state", "").title()),
+                issue=cleanup(entry["issue_label"]),
+                url=entry["issue_url"],
             )
         )
-        for sub in group["sub_entries"]:
-            title_text = cleanup(sub.get("title", ""))
-            issue_url = sub.get("issue_url", "")
-            number = sub.get("issue_number")
-            item_display = (
-                f"[#{number} – {title_text}]({issue_url})"
-                if number and issue_url
-                else f"[{title_text}]({issue_url})"
-            )
-            entry_type = (
-                "Pull request" if sub.get("type") == "pull_request" else "Sub-issue"
-            )
-            lines.append(
-                "| {updated} | {etype} | {item} | [{parent}]({plink}) | {state} | [{issue}]({url}) |".format(
-                    updated=format_timestamp(sub.get("updated_at", "")),
-                    etype=entry_type,
-                    item=item_display,
-                    parent=cleanup(initiative["title"]),
-                    plink=initiative["local_link"],
-                    state=cleanup(sub.get("state", "").title()),
-                    issue=f"{sub.get('repo')}#{number}",
-                    url=issue_url,
-                )
-            )
 
     output_path.write_text("\n".join(lines), encoding="utf-8")
 
