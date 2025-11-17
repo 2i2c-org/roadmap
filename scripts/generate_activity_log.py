@@ -59,7 +59,7 @@ def format_timestamp(value: str) -> str:
     dt = parse_timestamp(value)
     if dt == datetime.min:
         return ""
-    return dt.strftime("%Y-%m-%d %H:%M UTC")
+    return dt.strftime("%Y-%m-%d %H:%M")
 
 
 def collect_initiatives(initiative_dir: Path) -> List[Dict[str, Any]]:
@@ -93,9 +93,7 @@ def collect_initiatives(initiative_dir: Path) -> List[Dict[str, Any]]:
 def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path) -> None:
     """Write a markdown table sorted by latest activity."""
     def is_in_progress(status: str) -> bool:
-        if not status:
-            return False
-        status_lower = status.lower()
+        status_lower = (status or "").lower()
         return "in flight" in status_lower or "in progress" in status_lower
 
     def cleanup(text: str) -> str:
@@ -108,72 +106,66 @@ def generate_activity_table(initiatives: List[Dict[str, Any]], output_path: Path
             .replace("]", r"\]")
         )
 
-    entries = []
-    for initiative in initiatives:
-        if not is_in_progress(initiative.get("status", "")):
-            continue
-        entries.append(
-            {
+    def issue_label(repo: str, number):
+        repo_clean = cleanup(repo or "")
+        return f"{repo_clean}#{number}" if number else repo_clean
+
+    def iter_entries():
+        for initiative in initiatives:
+            if not is_in_progress(initiative.get("status", "")):
+                continue
+            yield {
                 "updated": initiative.get("updated_at", ""),
                 "type": "Initiative",
-                "item_title": initiative["title"],
-                "item_link": initiative["local_link"],
-                "parent_title": None,
-                "parent_link": None,
-                "state": initiative.get("state", ""),
-                "issue_label": f"{initiative['repo']}#{initiative['issue_number']}",
-                "issue_url": initiative["issue_url"],
+                "title": cleanup(initiative["title"]),
+                "link": initiative["local_link"],
+                "parent": None,
+                "issue": issue_label(initiative["repo"], initiative["issue_number"]),
+                "url": initiative["issue_url"],
             }
-        )
-        for tracked in initiative.get("tracked_issues", []):
-            issue_url = tracked.get("issue_url") or tracked.get("url", "")
-            repo_slug = tracked.get("repository", "") or initiative["repo"]
-            number = tracked.get("number")
-            title = clean_title_for_display(tracked.get("title", ""))
-            title = title.replace(f"#{number}", "").strip()
-            title = cleanup(title.strip("-–—: "))
-            entries.append(
-                {
+            for tracked in initiative.get("tracked_issues", []):
+                issue_url = tracked.get("issue_url") or tracked.get("url", "")
+                repo_slug = tracked.get("repository", "") or initiative["repo"]
+                number = tracked.get("number")
+                title = clean_title_for_display(tracked.get("title", ""))
+                title = cleanup(title.replace(f"#{number}", "").strip("-–—: "))
+                yield {
                     "updated": tracked.get("updated_at", ""),
                     "type": "Pull request"
                     if tracked.get("type") == "pull_request"
                     else "Sub-issue",
-                    "item_title": title,
-                    "item_link": issue_url,
-                    "parent_title": initiative["title"],
-                    "parent_link": initiative["local_link"],
-                    "state": tracked.get("state", ""),
-                    "issue_label": f"{repo_slug}#{number}" if number else repo_slug,
-                    "issue_url": issue_url,
+                    "title": title,
+                    "link": issue_url,
+                    "parent": (cleanup(initiative["title"]), initiative["local_link"]),
+                    "issue": issue_label(repo_slug, number),
+                    "url": issue_url,
                 }
-            )
 
-    entries.sort(
+    entries = sorted(
+        iter_entries(),
         key=lambda e: parse_timestamp(e.get("updated", "")),
         reverse=True,
     )
 
     lines = [
-        "| Last updated | Type | Item | Parent Initiative | State | Issue |",
-        "|--------------|------|------|-------------------|-------|-------|",
+        "| Last updated | Type | Item | Parent Initiative | Issue |",
+        "|--------------|------|------|-------------------|-------|",
     ]
 
     for entry in entries:
-        parent_part = (
-            "—"
-            if not entry["parent_title"]
-            else f"[{cleanup(entry['parent_title'])}]({entry['parent_link']})"
-        )
+        parent_part = "—"
+        if entry["parent"]:
+            title, link = entry["parent"]
+            parent_part = f"[{title}]({link})"
         lines.append(
-            "| {updated} | {etype} | [{title}]({link}) | {parent} | {state} | [{issue}]({url}) |".format(
+            "| {updated} | {etype} | [{title}]({link}) | {parent} | [{issue}]({url}) |".format(
                 updated=format_timestamp(entry.get("updated", "")),
                 etype=entry["type"],
-                title=cleanup(entry["item_title"]),
-                link=entry["item_link"],
+                title=entry["title"],
+                link=entry["link"],
                 parent=parent_part,
-                state=cleanup(entry.get("state", "").title()),
-                issue=cleanup(entry["issue_label"]),
-                url=entry["issue_url"],
+                issue=entry["issue"],
+                url=entry["url"],
             )
         )
 

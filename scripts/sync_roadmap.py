@@ -605,8 +605,9 @@ def generate_completed_table(data: Dict[str, Any], output_dir: Path):
             except:
                 closed_date = ""
 
+        status_icon = "🟣" if item.get("state", "").lower() == "closed" else "✅"
         lines.append(
-            f"| ✅ {closed_date} | [{item['title']}](initiative/{item['filename']}.md) | "
+            f"| {status_icon} {closed_date} | [{item['title']}](initiative/{item['filename']}.md) | "
             f"{item['short_description']} | [#{item['issue_number']}]({item['issue_url']}) | {funding_labels} |"
         )
 

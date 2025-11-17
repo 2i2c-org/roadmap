@@ -8,8 +8,6 @@ labels: {{ labels | tojson }}
 
 # {{ title }}
 
-{{ body }}
-
 {% if tracked_issues %}
 ```{dropdown} Sub-issues
 {% for issue in tracked_issues %}
@@ -18,6 +16,8 @@ labels: {{ labels | tojson }}
 {% endfor %}
 ```
 {% endif %}
+
+{{ body }}
 
 ---
 
