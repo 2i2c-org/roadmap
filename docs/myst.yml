@@ -5,9 +5,10 @@ project:
   github: https://github.com/2i2c-org/roadmap
   plugins:
     - plugins/sub-ref/plugin.mjs
-    - plugins/github-issue-links/plugin.mjs
-    - plugins/github-handle-links/plugin.mjs
-
+    - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-table%402025-12-01/index.mjs
+    - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-link%402025-12-01/index.mjs
+    - https://github.com/jupyter-book/myst-plugins/releases/download/github-handle-links%402025-12-01/index.mjs
+    - https://raw.githubusercontent.com/jupyter-book/myst-plugins/main/plugins/emoji-shortcodes/emoji-shortcodes.mjs
 site:
   template: book-theme
   nav:
@@ -24,4 +25,3 @@ site:
     logo_text: 2i2c Platform Roadmap
     hide_toc: true
     hide_outline: true
-    style: plugins/github-issue-links/github-issue-links.css
