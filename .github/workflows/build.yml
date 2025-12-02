@@ -30,26 +30,11 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
       - name: Install nox
         run: uv tool install nox
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Sync roadmap data
-        run: uv tool run nox -s sync-and-docs
-
-      - name: Copy MyST public assets
-        run: |
-          mkdir -p docs/_build/html
-          cp -R docs/_build/site/public/. docs/_build/html/ || true
+        run: uv tool run nox -s docs
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
