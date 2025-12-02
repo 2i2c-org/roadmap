@@ -16,19 +16,16 @@ The table below shows the platform initiatives in our near-term roadmap. Click t
 ## 🚀 In-Flight Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, body, labels, reactions, cofund
+:columns: title, summary, labels, reactions, cofund
 :sort: updated-desc
 :limit: 50
-:body-truncate: 250
 :templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`
 :::
 
 ## 📋 Upcoming Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, body, labels, reactions, cofund
-:sort: updated-desc
+:columns: title, summary, labels, reactions, cofund
 :limit: 50
-:body-truncate: 250
 :templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`
 :::

@@ -5,7 +5,7 @@ This page shows platform initiatives that have been completed on behalf of our [
 +++ {"class": "col-page-inset"}
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/19
-:columns: title, state, updated, body, labels
+:columns: title, state, closed, summary, labels
 :sort: closed-desc
 :limit: 50
 :body-truncate: 500

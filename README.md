@@ -22,6 +22,7 @@ Initiatives labeled `[platform initiative]` are what we show here.
 ## Structure
 
 - `docs/` - A Jupyter Book site that uses the output of `scripts/` to share roadmap items in a helpful way. It has a landing page that lists all of our roadmap items, and a dedicated page for each roadmap item that we can reference, with a link back to the GitHub issue.
+- The [MyST GitHub Issue Tables plugin](https://jupyter-book.github.io/myst-plugins/github-issue-table/) is used to generate all of these tables.
 
 ## Workflow
 
