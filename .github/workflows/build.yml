@@ -33,7 +33,7 @@ jobs:
       - name: Install nox
         run: uv tool install nox
 
-      - name: Sync roadmap data
+      - name: Build docs
         run: uv tool run nox -s docs
 
       - name: Upload Pages artifact
