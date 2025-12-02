@@ -2,14 +2,6 @@ import nox
 
 nox.options.default_venv_backend = "uv"
 
-
-@nox.session
-def sync(session):
-    """Sync roadmap data from GitHub Project Board."""
-    session.install("-r", "requirements.txt")
-    session.run("python", "scripts/sync_roadmap.py")
-
-
 @nox.session
 def docs(session):
     """Build MyST documentation site."""
@@ -25,12 +17,6 @@ def docs_live(session):
     with session.chdir("docs"):
         session.run("myst", "start")
 
-
-@nox.session(name="sync-and-docs")
-def sync_and_docs(session):
-    """Sync roadmap then build docs (for CI)."""
-    sync(session)
-    docs(session)
 
 @nox.session
 def clean(session):
