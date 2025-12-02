@@ -16,7 +16,7 @@ The table below shows the platform initiatives in our near-term roadmap. Click t
 ## 🚀 In-Flight Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, body, number, labels, reactions, cofund
+:columns: title, body, labels, reactions, cofund
 :sort: updated-desc
 :limit: 50
 :body-truncate: 250
@@ -26,7 +26,7 @@ The table below shows the platform initiatives in our near-term roadmap. Click t
 ## 📋 Upcoming Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, body, number, labels, reactions, cofund
+:columns: title, body, labels, reactions, cofund
 :sort: updated-desc
 :limit: 50
 :body-truncate: 250
