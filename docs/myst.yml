@@ -18,6 +18,8 @@ site:
       url: /completed
     - title: Activity Log
       url: /activity
+    - title: About this roadmap
+      url: /about
   options:
     folders: true
     logo: images/logo.png
