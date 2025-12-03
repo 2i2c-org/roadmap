@@ -1,6 +1,6 @@
 # About the Roadmap
 
-This roadmap reflects the current priorities of the 2i2c Product Team and is automatically synced from our [internal project board](https://github.com/orgs/2i2c-org/projects/57). It is constantly changing based on funding, priorities, and community needs.
+This roadmap reflects the current priorities of the [2i2c](https://2i2c.org) Product Team and is automatically synced from our [internal project board](https://github.com/orgs/2i2c-org/projects/57). It is constantly changing based on funding, priorities, and community needs.
 
 ## Our goals
 

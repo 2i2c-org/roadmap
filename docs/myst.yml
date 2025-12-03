@@ -20,6 +20,8 @@ site:
       url: /activity
     - title: About this roadmap
       url: /about
+    - title: 2i2c Home
+      url: https://2i2c.org
   options:
     folders: true
     logo: images/logo.png
