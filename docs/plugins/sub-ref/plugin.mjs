@@ -1,6 +1,7 @@
 const subRefRole = {
   name: 'sub-ref',
   doc: 'Return a small bit of dynamically generated text (e.g. today\'s date).',
+  body: 'text',
   run(data) {
     const value = data?.node?.value || data?.arg || '';
     if (value === 'today') {

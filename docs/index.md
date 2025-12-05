@@ -21,7 +21,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 
 **Participation**: _We encourage our member communities to click issues and comment!_
 - **Discuss**: Click any initiative title to view the GitHub issue and leave feedback.
-- **Support**: Click the {button}`💰 Co-fund this` button to express interest in funding an item.
+- **Support**: Click the {kbd}`💰 Co-fund this` button to express interest in funding an item.
 :::
 
 +++ {"class": "col-page-inset"}

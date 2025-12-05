@@ -16,8 +16,6 @@ site:
       url: /index
     - title: Completed
       url: /completed
-    - title: Activity Log
-      url: /activity
     - title: About this roadmap
       url: /about
     - title: 2i2c Home
