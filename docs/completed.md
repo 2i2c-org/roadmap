@@ -8,6 +8,7 @@ This page shows platform initiatives that have been completed on behalf of our [
 :columns: title, closed, summary, labels
 :sort: closed-desc
 :limit: 50
-:body-truncate: 500
+:show-sub-issues: true
+:summary-truncate: 300
 :date-format: relative
 :::
