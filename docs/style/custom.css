@@ -1,0 +1,10 @@
+/* Background color for non-dark mode */
+.bg-white {
+  background-color: #f7f7f7;
+}
+
+/* Make first column of tables bold and non-italic */
+table td:first-child a {
+  font-weight: bold !important;
+  font-style: normal !important;
+}
