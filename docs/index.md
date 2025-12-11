@@ -29,20 +29,20 @@ Things towards the top are closer to action, more well-refined, and more likely 
 ## 🚀 In-Flight Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, summary, cofund, labels, reactions
+:columns: title, summary, cofund, workplan, labels, reactions
 :summary-truncate: 300
 :append-sub-issues: summary
 :sort: updated-desc
 :limit: 50
-:templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`
+:templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
 :::
 
 ## 📋 Upcoming Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, summary, cofund, labels, reactions
+:columns: title, summary, cofund, workplan, labels, reactions
 :summary-truncate: 300
 :append-sub-issues: summary
 :limit: 50
-:templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`
+:templates: cofund={button}` 💰 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
 :::

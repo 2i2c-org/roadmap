@@ -5,7 +5,7 @@ project:
   github: https://github.com/2i2c-org/roadmap
   plugins:
     - plugins/sub-ref/plugin.mjs
-    - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-table%402025-12-09/index.mjs
+    - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-table%402025-12-11/index.mjs
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-link%402025-12-01/index.mjs
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-handle-links%402025-12-01/index.mjs
     - https://raw.githubusercontent.com/jupyter-book/myst-plugins/main/plugins/emoji-shortcodes/emoji-shortcodes.mjs
