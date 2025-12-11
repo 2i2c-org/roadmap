@@ -21,7 +21,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 
 **Participation**: _We encourage our member communities to click issues and comment!_
 - **Discuss**: Click any initiative title to view the GitHub issue and leave feedback.
-- **Support**: Click the {kbd}`👈 Co-fund this` button to express interest in funding an item.
+- **Support**: Click the {kbd}`💰 Co-fund` button to express interest in funding an item.
 :::
 
 +++ {"class": "col-page-inset"}
@@ -29,20 +29,20 @@ Things towards the top are closer to action, more well-refined, and more likely 
 ## 🚀 In-Flight Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, summary, workplan, cofund, labels, reactions
+:columns: title, summary, workplan, cofund_this, labels, reactions
 :summary-truncate: 300
 :append-sub-issues: summary
 :sort: updated-desc
 :limit: 50
-:templates: cofund={button}` 👈 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
+:templates: cofund_this={button}` 💰 Co-fund <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
 :::
 
 ## 📋 Upcoming Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, summary, workplan, cofund, labels, reactions
+:columns: title, summary, workplan, cofund_this, labels, reactions
 :summary-truncate: 300
 :append-sub-issues: summary
 :limit: 50
-:templates: cofund={button}` 👈 Co-fund this <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
+:templates: cofund_this={button}` 💰 Co-fund <https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.1768292423={{title}}&entry.384914845={{url}}>`; workplan={button}` 📄 Plan <{{SoW}}>`
 :::
