@@ -10,5 +10,6 @@ This page shows platform initiatives that have been completed on behalf of our [
 :limit: 50
 :append-sub-issues: summary
 :summary-truncate: 300
+:summary-header: problem statement, problem, context
 :date-format: relative
 :::

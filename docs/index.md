@@ -22,6 +22,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
 :columns: title, summary, workplan, labels, reactions
 :summary-truncate: 300
+:summary-header: problem statement, problem, context
 :append-sub-issues: summary
 :sort: updated-desc
 :limit: 50
@@ -33,6 +34,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
 :columns: title, summary, workplan, labels, reactions
 :summary-truncate: 300
+:summary-header: problem statement, problem, context
 :append-sub-issues: summary
 :limit: 50
 :templates: workplan={button}` 📄 Plan <{{SoW}}>`
