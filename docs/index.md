@@ -20,7 +20,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 ## 🚀 In-Flight Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, summary, workplan, labels, reactions
+:columns: title, summary, workplan
 :summary-truncate: 300
 :summary-header: problem statement, problem, context
 :append-sub-issues: summary
@@ -32,7 +32,7 @@ Things towards the top are closer to action, more well-refined, and more likely 
 ## 📋 Upcoming Initiatives
 
 :::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, summary, workplan, labels, reactions
+:columns: title, summary, workplan
 :summary-truncate: 300
 :summary-header: problem statement, problem, context
 :append-sub-issues: summary
