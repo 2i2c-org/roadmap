@@ -25,21 +25,20 @@ Initiatives labeled `[platform initiative]` are what we show here.
 
 `docs/` - A Jupyter Book site that uses the output of `scripts/` to share roadmap items in a helpful way. It has a landing page that lists all of our roadmap items, and a dedicated page for each roadmap item that we can reference, with a link back to the GitHub issue.
 
-### GitHub issue table plugin generates our roadmap table
+### A local plugin generates our lists of initiatives
 
-The [MyST GitHub Issue Tables plugin](https://jupyter-book.github.io/myst-plugins/github-issue-table/) is used to generate all of these tables.
+We have a plugin at `docs/plugins` that:
 
-### GitHub project board is the data we use
+1. Downloads all the issues from the [/initiatives repository](https://github.com/2i2c-org/initiatives)
+2. Downloads the metadata and ordering for each from the [project board](https://github.com/orgs/2i2c-org/projects/57)
+3. Outputs MyST AST that we style with a little bit of CSS to act like a clean "list" view
 
-The `{issue-table}` directive points to a github project view for each of our roadmap views.
+### Inspiration
 
-- This one for upcoming: https://github.com/orgs/2i2c-org/projects/57/views/18
-- This one for in flight: https://github.com/orgs/2i2c-org/projects/57/views/17
-- This one for completed:  https://github.com/orgs/2i2c-org/projects/57/views/19
+Our goal is to have a clean and readable output with a few useful pieces of information (e.g. `theme: [label]` labels), and some interactivity to let users dig a bit deeper if they want to learn more about an initiative. Here are two sources of inspiration for this kind of view:
 
-It mostly just mirrors that view and shares information on it.
-
-**To change issue order, filters, etc**, change the view and "save" it, and then re-build the docs.
+- The ["List" view in AirTable](https://support.airtable.com/docs/list-view-overview)
+- The ["List" view in Notion](https://www.notion.com/help/lists)
 
 ### Site is hosted on GitHub pages
 

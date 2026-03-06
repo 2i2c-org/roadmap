@@ -1,10 +1,123 @@
-/* Background color for non-dark mode */
-.bg-white {
-  background-color: #f7f7f7;
+/**
+* This over-rides a bunch of default MyST styling for things like <details> and <list>
+* in order to make it look like an AirTable "list" layout that is minimal.
+* There's also some maybe-too-clever CSS for things like "sub-issue completion state".
+* Styling for each sub-issue is handled by a myst plugin we're importing.
+*/
+
+/* List view whitespace etc*/
+.issue-board {
+  padding-left: 0;
+  margin-left: 0;
 }
 
-/* Make first column of tables bold and non-italic */
-table td:first-child a {
-  font-weight: bold !important;
-  font-style: normal !important;
+.issue-board-item {
+  padding: 0;
+}
+
+/* Strip the myst-dropdown theme styling */
+.issue-board-details.myst-dropdown {
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+  overflow: visible !important;
+  border-bottom: 1px solid #eee;
+}
+
+/* Summary row: strip theme background, tighten padding */
+.issue-board-details > summary.myst-dropdown-header {
+  background: none !important;
+  padding: 0.5rem 0 !important;
+  min-height: unset !important;
+  font-size: 1rem !important;
+}
+
+/* Make the title span flex so badges push right */
+.issue-board-details .myst-dropdown-header-title {
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+/* Title link */
+.issue-board-details .myst-dropdown-header-title > a {
+  font-weight: 600;
+}
+
+/* Right-aligned badges + count group */
+.issue-board-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* Progress donut: conic-gradient circle with white center cutout */
+.issue-board-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.issue-board-donut {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  /* mask creates the donut hole — 3px ring */
+  -webkit-mask: radial-gradient(circle, transparent 4px, black 4.5px);
+  mask: radial-gradient(circle, transparent 4px, black 4.5px);
+  flex-shrink: 0;
+}
+
+/* Sub-issue count and timestamps */
+.issue-board-count,
+.issue-board-updated {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.issue-board-count {
+  color: #777;
+}
+
+.issue-board-updated {
+  color: #999;
+}
+
+/* Expanded body: strip theme padding, indent nested content */
+.issue-board-details .myst-dropdown-body {
+  padding: 0.2rem 0 0.5rem 2.5rem !important;
+}
+
+/* Expanded description and sub-issues */
+.issue-board-description,
+.issue-board-subissues {
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
+}
+
+.issue-board-description {
+  color: #555;
+}
+
+.issue-board-subissues {
+  padding-left: 0;
+}
+
+.issue-board-subissues > p {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
+  margin: 0;
+}
+
+.issue-board-subissues > p > .issue-board-updated {
+  margin-left: auto;
+  flex-shrink: 0;
 }

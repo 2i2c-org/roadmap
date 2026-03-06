@@ -19,23 +19,10 @@ Things towards the top are closer to action, more well-refined, and more likely 
 
 ## 🚀 In-Flight Initiatives
 
-:::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/17
-:columns: title, summary, workplan
-:widths: 25,61,14
-:summary-header: problem statement, problem, context
-:append-sub-issues: summary
-:sort: updated-desc
-:limit: 50
-:templates: workplan={button}` 📄 Plan <{{SoW}}>`
+:::{issue-board} P&S Initiatives in flight
 :::
 
 ## 📋 Upcoming Initiatives
 
-:::{issue-table} https://github.com/orgs/2i2c-org/projects/57/views/18
-:columns: title, summary, workplan
-:widths: 25,61,14
-:summary-header: problem statement, problem, context
-:append-sub-issues: summary
-:limit: 50
-:templates: workplan={button}` 📄 Plan <{{SoW}}>`
+:::{issue-board} Upcoming P&S initiatives
 :::
