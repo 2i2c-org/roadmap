@@ -9,7 +9,7 @@
 // only happen once per build. Delete the cache file to force a refetch.
 
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 
 const CACHE_PATH = "_build/cache/issue-board.json";
@@ -77,27 +77,31 @@ function normalizeItem(node, status) {
   };
 }
 
+// Memoized so multiple {issue-board} directives don't re-read the cache
+let cachedItems = null;
+
 export function fetchData() {
-  if (existsSync(CACHE_PATH)) {
-    return JSON.parse(readFileSync(CACHE_PATH, "utf-8"));
+  if (cachedItems) return cachedItems;
+
+  try {
+    cachedItems = JSON.parse(readFileSync(CACHE_PATH, "utf-8"));
+    return cachedItems;
+  } catch {
+    // No cache — fetch from GitHub
   }
 
   console.log("issue-board: fetching from GitHub...");
 
-  // Include items from initiatives repo OR with type:platform label
-  const allNodes = paginate(fetchProjectItems).filter((node) => node.content?.title);
-  const items = allNodes
-    .filter((node) => {
-      const labels = (node.content.labels?.nodes || []).map((l) => l.name);
-      const isInitiativesRepo = node.content.repository?.nameWithOwner === "2i2c-org/initiatives";
-      const hasPlatformLabel = labels.includes("type:platform");
-      return isInitiativesRepo || hasPlatformLabel;
-    })
+  // Normalize first, then filter to initiatives repo or type:platform label
+  const allItems = paginate(fetchProjectItems)
+    .filter((node) => node.content?.title)
     .map((node) => normalizeItem(node.content, node.fieldValueByName?.name || ""));
 
-  console.log(`issue-board: fetched ${items.length} items from project board`);
+  cachedItems = allItems.filter((item) =>
+    item.url.includes("2i2c-org/initiatives") || item.labels.includes("type:platform")
+  );
 
   mkdirSync(dirname(CACHE_PATH), { recursive: true });
-  writeFileSync(CACHE_PATH, JSON.stringify(items, null, 2));
-  return items;
+  writeFileSync(CACHE_PATH, JSON.stringify(cachedItems, null, 2));
+  return cachedItems;
 }
