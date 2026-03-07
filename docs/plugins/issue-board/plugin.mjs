@@ -22,31 +22,18 @@ const issueBoardDirective = {
     }
 
     let filtered = allItems.filter((item) => item.status === data.arg);
-    const statuses = [...new Set(allItems.map((i) => i.status))];
-    console.log(`issue-board: status="${data.arg}" matched=${filtered.length} total=${allItems.length} statuses=${JSON.stringify(statuses)}`);
 
     // "Done" items: only show completed (not duplicated/not-planned), newest first
     if (data.arg === "Done") {
-      const beforeFilter = filtered.length;
       filtered = filtered
         .filter((item) => item.stateReason === "COMPLETED")
         .sort((a, b) => new Date(b.closedAt || 0) - new Date(a.closedAt || 0));
-      console.log(`issue-board: Done filter: ${beforeFilter} -> ${filtered.length} COMPLETED`);
-    }
-
-    const children = [];
-    for (const item of filtered) {
-      try {
-        children.push(renderItem(item, ctx));
-      } catch (err) {
-        console.error(`issue-board: renderItem failed for "${item.title}":`, err.message);
-      }
     }
 
     return [{
       type: "div",
       class: "issue-board",
-      children,
+      children: filtered.map((item) => renderItem(item, ctx)),
     }];
   },
 };
