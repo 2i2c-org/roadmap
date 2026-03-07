@@ -85,7 +85,8 @@ export function renderItem(item, ctx) {
   
   // CSS donut: conic-gradient fills a circle proportionally, with a white center cutout
   const total = item.subIssues.length;
-  const deg = total > 0 ? Math.round((done / total) * 360) : 0;
+  const isComplete = item.stateReason === "COMPLETED";
+  const deg = total > 0 ? Math.round((done / total) * 360) : (isComplete ? 360 : 0);
   rightChildren.push({
     type: "span", class: "issue-board-progress",
     children: [
