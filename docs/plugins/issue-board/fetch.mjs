@@ -1,8 +1,9 @@
 // Data fetching for the issue board plugin.
 //
-// Two data sources:
-// 1. Project board (#57) — active initiatives from 2i2c-org/initiatives
-// 2. GitHub search — completed "type:platform" issues from across the org
+// Fetches items from the 2i2c "Product and Services" project board.
+// Items are included if they're:
+// - From the /initiatives repo OR
+// - Have a "type:platform" label (these are how we used to label initiatives)
 //
 // Results are cached to _build/cache/issue-board.json so GitHub API calls
 // only happen once per build. Delete the cache file to force a refetch.
@@ -21,7 +22,6 @@ function ghGraphQL(query) {
   return JSON.parse(result).data;
 }
 
-// Shared fields for both queries
 const ISSUE_FRAGMENT = `
   title url body updatedAt closedAt stateReason
   repository { nameWithOwner }
@@ -29,7 +29,6 @@ const ISSUE_FRAGMENT = `
   subIssues(first: 20) { nodes { title state url updatedAt } }
 `;
 
-// Active initiatives from the "Product and Services" project board
 function fetchProjectItems(cursor) {
   const after = cursor ? `, after: "${cursor}"` : "";
   const query = `{
@@ -52,20 +51,6 @@ function fetchProjectItems(cursor) {
   return ghGraphQL(query).organization.projectV2.items;
 }
 
-// Historical completed initiatives found by label search across the org
-function fetchCompletedItems(cursor) {
-  const after = cursor ? `, after: "${cursor}"` : "";
-  const query = `{
-    search(query: "org:2i2c-org label:\\"type:platform\\" is:closed", type: ISSUE, first: 50${after}) {
-      pageInfo { hasNextPage endCursor }
-      nodes {
-        ... on Issue { ${ISSUE_FRAGMENT} }
-      }
-    }
-  }`;
-  return ghGraphQL(query).search;
-}
-
 function paginate(fetchFn) {
   const allNodes = [];
   let cursor = null;
@@ -80,7 +65,7 @@ function paginate(fetchFn) {
 // Flatten GitHub's nested GraphQL response into a simple object
 function normalizeItem(node, status) {
   return {
-    title: node.title.replace(/^\[.*?\]\s*/g, "").trim(), // Strip "[Platform Initiative]" prefixes
+    title: node.title.replace(/^\[.*?\]\s*/g, "").trim(),
     url: node.url,
     status,
     stateReason: node.stateReason || "",
@@ -99,18 +84,18 @@ export function fetchData() {
 
   console.log("issue-board: fetching from GitHub...");
 
-  // Project board items (initiatives repo only)
-  const items = paginate(fetchProjectItems)
-    .filter((node) => node.content?.repository?.nameWithOwner === "2i2c-org/initiatives")
+  // Include items from initiatives repo OR with type:platform label
+  const allNodes = paginate(fetchProjectItems).filter((node) => node.content?.title);
+  const items = allNodes
+    .filter((node) => {
+      const labels = (node.content.labels?.nodes || []).map((l) => l.name);
+      const isInitiativesRepo = node.content.repository?.nameWithOwner === "2i2c-org/initiatives";
+      const hasPlatformLabel = labels.includes("type:platform");
+      return isInitiativesRepo || hasPlatformLabel;
+    })
     .map((node) => normalizeItem(node.content, node.fieldValueByName?.name || ""));
 
-  // Completed items from across the org, deduplicated against project board
-  const existingUrls = new Set(items.map((i) => i.url));
-  for (const node of paginate(fetchCompletedItems)) {
-    if (node.stateReason !== "COMPLETED" || existingUrls.has(node.url)) continue;
-    items.push(normalizeItem(node, "Done"));
-    existingUrls.add(node.url);
-  }
+  console.log(`issue-board: fetched ${items.length} items from project board`);
 
   mkdirSync(dirname(CACHE_PATH), { recursive: true });
   writeFileSync(CACHE_PATH, JSON.stringify(items, null, 2));
