@@ -1,19 +1,10 @@
 # 2i2c Platform Roadmap
 
-The table below shows the platform initiatives in our near-term roadmap.
-They are pulled from the [`2i2c-org/initiatives` repository](https://github.com/2i2c-org/initiatives).
-We invite you to comment on anything there!
-See the [About the roadmap page](./about.md) for context on our workflow and funding model.
-
-:::{important} This roadmap is constantly changing
-:class: dropdown
-Our roadmap is always changing based on feedback from our member communities.
-The goal of this site is to make our roadmap process more **transparent**, **participatory**, and **useful** to drive conversations with our community members.
-
-Things towards the top are closer to action, more well-refined, and more likely to happen. Things towards the bottom are more experimental or vague and need refinement.
+These are the initiatives that drive our work now or in the future.
+They are pulled from [`2i2c-org/initiatives`](https://github.com/2i2c-org/initiatives).
+See the [About the roadmap page](./about.md) for context on our workflow and how you can engage with us.
 
 **Last updated:** {sub-ref}`today`
-:::
 
 +++ {"class": "col-page-inset"}
 

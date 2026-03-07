@@ -10,19 +10,12 @@ We publish this roadmap to achieve three main goals:
 - **Participation**: Invite discussion, feedback, and collaboration on the initiatives we are exploring.
 - **Co-funding**: Encourage communities to identify shared needs and support them with financial resources or in-kind contributions.
 
-## Our Co-funding model
+## How you can influence our roadmap
 
-While some initiatives are supported by our core budget, many rely on **co-funding** from our member communities. This model allows us to prioritize work that has tangible, immediate value to our users and ensures our sustainability as a non-profit.
+We use the roadmap to gather feedback about what would be most impactful from communities, and to gather resources from communities that can support roadmap initiatives.
+You can influence our roadmap in a few ways, all of which you can do in the issues linked by a roadmap item:
 
-**If you'd like an initiative to be worked on sooner**, providing some (or all) of the funding needed is the best way to make it happen. Click the {kbd}`Co-fund this` button to fill out a form that will help us work with you to get the work funded.
+- **Endorse initiatives**. Click the link on an initiative and write a comment saying its value to you and who you represent (an org, community, etc).
+- **Offer funding**. If you've got budget to work with, let us know that you'd be able to **co-fund** with others (or entirely by yourself).
+- **Offer support**. If you'd be willing to write a letter of support for us to seek funding (e.g. for a grant), let us know.
 
-## Our workflow
-
-The items on this roadmap are **Initiatives** - these are projects or features that we believe will significantly improve the infrastructure our member communities use. We rely on our member communities to help us shape Initiatives and find funding for them.
-
-Here's the lifecycle of initiatives - the further down the cycle they go, the more likely they'll be worked on soon.
-
-1. **Identified**: We identify needs from our community support channels, upstream developments, and internal strategy.
-2. **Scoped**: We define a Statement of Work (SOW) to understand the effort required.
-3. **Funded**: We look for alignment with member communities who may be willing to "co-fund" the initiative.
-4. **Execution**: Once funded (or prioritized via core budget), the work is scheduled and executed.
