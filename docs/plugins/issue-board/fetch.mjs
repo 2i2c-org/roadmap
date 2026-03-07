@@ -88,7 +88,7 @@ function normalizeItem(node, status) {
     body: node.body,
     updatedAt: node.updatedAt,
     closedAt: node.closedAt,
-    subIssues: node.subIssues?.nodes || [],
+    subIssues: (node.subIssues?.nodes || []).filter(Boolean),
   };
 }
 
