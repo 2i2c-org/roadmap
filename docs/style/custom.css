@@ -83,6 +83,8 @@
 
 .issue-board-count {
   color: #777;
+  min-width: 4ch;
+  text-align: right;
 }
 
 .issue-board-updated {
