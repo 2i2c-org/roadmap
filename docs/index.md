@@ -1,10 +1,7 @@
 # 2i2c Platform Roadmap
 
-These are the initiatives that drive our work now or in the future.
-They are pulled from [`2i2c-org/initiatives`](https://github.com/2i2c-org/initiatives).
-See the [About the roadmap page](./about.md) for context on our workflow and how you can engage with us.
-
-**Last updated:** {sub-ref}`today`
+These are the initiatives that drive our work now and in the future.
+See [About the roadmap](./about.md) for what these mean, how they fit into our workflow, and how you can engage with us.
 
 +++ {"class": "col-page-inset"}
 
