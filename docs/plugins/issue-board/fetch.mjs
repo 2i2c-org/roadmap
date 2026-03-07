@@ -34,7 +34,7 @@ function fetchProjectItems(cursor) {
   const query = `{
     organization(login: "2i2c-org") {
       projectV2(number: 57) {
-        items(first: 100${after}) {
+        items(first: 100${after}, orderBy: {field: POSITION, direction: ASC}) {
           pageInfo { hasNextPage endCursor }
           nodes {
             fieldValueByName(name: "Status") {
