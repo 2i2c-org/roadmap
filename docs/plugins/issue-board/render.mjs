@@ -128,8 +128,7 @@ export function renderItem(item, ctx) {
   }
 
   // Sub-issues shown as bare URLs so the github-issue-link plugin decorates them.
-  // Skipped for "Done" items to avoid hitting GitHub API rate limits.
-  if (item.subIssues.length > 0 && item.status !== "Done") {
+  if (item.subIssues.length > 0) {
     detailsBody.push({
       type: "div", class: "issue-board-subissues",
       children: item.subIssues.map((sub) => {

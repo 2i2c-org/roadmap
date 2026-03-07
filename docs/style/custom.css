@@ -23,7 +23,7 @@
   box-shadow: none !important;
   background: none !important;
   overflow: visible !important;
-  border-bottom: 1px solid #eee;
+  border-bottom: none;
 }
 
 /* Summary row: strip theme background, tighten padding */
@@ -102,7 +102,7 @@
 }
 
 .issue-board-description {
-  color: #555;
+  opacity: 0.7;
 }
 
 .issue-board-subissues {
