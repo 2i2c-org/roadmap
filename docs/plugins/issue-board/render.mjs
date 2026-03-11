@@ -102,6 +102,17 @@ export function renderItem(item, ctx) {
       },
     ],
   });
+  // CTA button for non-completed items (visible on hover, only icon is always visible on touchscreen)
+  if (item.status !== "Done") {
+    rightChildren.push({
+      type: "link", url: `https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform?usp=pp_url&entry.384914845=${encodeURIComponent(item.url)}`, class: "issue-board-cta",
+      children: [
+        { type: "span", class: "issue-board-cta-text", children: [{ type: "text", value: "Fund this " }] },
+        { type: "span", class: "issue-board-cta-icon", children: [{ type: "text", value: "💰" }] },
+      ],
+    });
+  }
+
   if (item.status === "Done") {
     const label = formatTimeAgo(item.closedAt, "Completed");
     if (label) {

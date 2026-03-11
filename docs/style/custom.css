@@ -91,6 +91,45 @@
   color: #999;
 }
 
+/* CTA button: hidden by default, shown on row hover */
+.issue-board-cta {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: none;
+  border: 1px solid #ccc;
+  color: #777 !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+/* Hide the external-link icon MyST adds */
+.issue-board-cta svg {
+  display: none !important;
+}
+
+.issue-board-details > summary:hover .issue-board-cta {
+  opacity: 1;
+}
+
+.issue-board-cta:hover {
+  border-color: #8250df;
+  color: #8250df !important;
+}
+
+/* Mobile: always show as emoji-only icon */
+@media (hover: none) {
+  .issue-board-cta {
+    opacity: 1;
+    font-size: 0.75rem;
+  }
+  .issue-board-cta-text {
+    display: none;
+  }
+}
+
 /* Expanded body: strip theme padding, indent nested content */
 .issue-board-details .myst-dropdown-body {
   padding: 0.2rem 0 0.5rem 2.5rem !important;
