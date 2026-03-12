@@ -28,8 +28,8 @@ function render({ model, el }) {
   el.appendChild(wrapper);
 
   function filter() {
-    const query = input.value.toLowerCase().trim();
-    const terms = query.split(/\s+/).filter(Boolean);
+    const query = input.value.trim();
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
 
     document.querySelectorAll(".issue-board-item").forEach((item) => {
       const text = item.querySelector("summary")?.textContent.toLowerCase() || "";
@@ -37,10 +37,22 @@ function render({ model, el }) {
     });
 
     clear.style.display = query ? "" : "none";
+
+    // Keep URL in sync so the current filter is shareable
+    const url = new URL(window.location);
+    query ? url.searchParams.set("q", query) : url.searchParams.delete("q");
+    history.replaceState(null, "", url);
   }
 
   input.addEventListener("input", filter);
   clear.addEventListener("click", () => { input.value = ""; filter(); input.focus(); });
+
+  // On load, populate from URL query parameter
+  const initialQuery = new URLSearchParams(window.location.search).get("q");
+  if (initialQuery) {
+    input.value = initialQuery;
+    filter();
+  }
 }
 
 export default { render };
