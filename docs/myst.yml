@@ -22,6 +22,7 @@ site:
       url: https://2i2c.org
   options:
     folders: true
+    favicon: images/favicon.png
     logo: images/logo.webp
     logo_dark: images/logo-dark.webp
     logo_text: Platform Roadmap
