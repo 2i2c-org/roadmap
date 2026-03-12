@@ -3,7 +3,7 @@
   align-items: center;
   gap: 0.5rem;
   width: 33%;
-  margin-left: auto;
+  margin: 0.75rem 0 0.25rem 0;
   padding: 0.5rem 0.75rem;
   border: 1px solid transparent;
   border-radius: 8px;
@@ -60,6 +60,5 @@
 @media (max-width: 768px) {
   .search-wrapper {
     width: 66%;
-    margin-left: 0;
   }
 }
