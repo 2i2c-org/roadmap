@@ -7,6 +7,10 @@ Interested in funding one of these initiatives? [Fill out our funding interest f
 
 +++ {"class": "col-page-inset"}
 
+```{anywidget} ./widgets/search.mjs
+:css: ./widgets/search.css
+```
+
 ## 🚀 In-Flight Initiatives
 
 :::{issue-board} P&S Initiatives in flight
