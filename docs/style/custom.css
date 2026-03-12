@@ -5,6 +5,11 @@
 * Styling for each sub-issue is handled by a myst plugin we're importing.
 */
 
+/* Tighten gap between search widget and first heading */
+.col-page-inset > h2:first-of-type {
+  margin-top: 0.5rem;
+}
+
 /* List view whitespace etc*/
 .issue-board {
   padding-left: 0;
