@@ -1,4 +1,4 @@
-# 2i2c Platform Roadmap
+# 2i2c Initiatives Roadmap
 
 These are the initiatives that currently drive 2i2c's work. They mostly involve making upstream contributions in open source communities. See [About the roadmap](./about.md) for what these mean.
 
@@ -19,9 +19,13 @@ These are driving our work right now...
 :::{issue-board} P&S Initiatives in flight
 :::
 
+Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
+
 ## 📋 Upcoming Initiatives
 
 We'll work on these next as we finish up In-Flight initiatives...
 
 :::{issue-board} Upcoming P&S initiatives
 :::
+
+Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
