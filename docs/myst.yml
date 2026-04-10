@@ -6,14 +6,18 @@ project:
   plugins:
     - plugins/sub-ref/plugin.mjs
     - plugins/issue-board/plugin.mjs
+    - https://github.com/jupyter-book/myst-plugins/raw/refs/heads/main/plugins/searchfilter/searchfilter.mjs
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-link%402026-02-09/index.mjs
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-handle-links%402026-02-09/index.mjs
     - https://raw.githubusercontent.com/jupyter-book/myst-plugins/main/plugins/emoji-shortcodes/emoji-shortcodes.mjs
+    - https://github.com/jupyter-book/myst-plugins/releases/download/footer-latest/index.mjs
 site:
   template: book-theme
   nav:
     - title: Roadmap
       url: /index
+    - title: Candidates
+      url: /candidates
     - title: Completed
       url: /completed
     - title: About this roadmap
@@ -29,3 +33,5 @@ site:
     hide_toc: true
     hide_outline: true
     style: style/custom.css
+  parts:
+    footer: _site/footer.md

@@ -139,8 +139,20 @@ export function renderItem(item, ctx) {
     }
   }
 
+  // Link to full GitHub issue
+  detailsBody.push({
+    type: "paragraph", class: "issue-board-github-link",
+    children: [
+      { type: "link", url: item.url, children: [{ type: "text", value: "GitHub Initiative \u00BB" }] },
+    ],
+  });
+
   // Sub-issues shown as bare URLs so the github-issue-link plugin decorates them.
   if (item.subIssues.length > 0) {
+    detailsBody.push({
+      type: "paragraph", class: "issue-board-subissues-header",
+      children: [{ type: "strong", children: [{ type: "text", value: "Sub-issues" }] }],
+    });
     detailsBody.push({
       type: "div", class: "issue-board-subissues",
       children: item.subIssues.map((sub) => {
