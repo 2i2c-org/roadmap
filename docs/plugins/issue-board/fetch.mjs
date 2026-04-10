@@ -101,6 +101,41 @@ export function fetchData() {
     item.url.includes("2i2c-org/initiatives") || item.labels.includes("type:platform")
   );
 
+  /**
+   * Fetch candidate initiatives
+   * 
+   * These are open issues in the /initiatives repo that meet these criteria:
+   * 
+   * - Are NOT on the project board
+   * - Have no error labels from the initiatives linter
+   */
+  const boardUrls = new Set(cachedItems.map((item) => item.url));
+  // Grab all open issues in the initiatives repo
+  const candidateJson = execSync(
+    `gh issue list --repo 2i2c-org/initiatives --state open --json url,title,body,updatedAt,labels --limit 200`,
+    { encoding: "utf-8" },
+  );
+  const allRepoIssues = JSON.parse(candidateJson);
+  // Filter to only those that are candidates
+  const candidates = allRepoIssues
+    // Exclude issues already on the board
+    .filter((issue) => !boardUrls.has(issue.url))
+    // Exclude issues failing the linter
+    .filter((issue) => !issue.labels.some((l) => l.name.startsWith("error:")))
+    // Reformat like the other initiatives we've prepped
+    .map((issue) => ({
+      title: issue.title.replace(/^\[.*?\]\s*/g, "").trim(),
+      url: issue.url,
+      status: "Candidate",
+      stateReason: "",
+      labels: issue.labels.map((l) => l.name),
+      body: issue.body,
+      updatedAt: issue.updatedAt,
+      closedAt: null,
+      subIssues: [],
+    }));
+  cachedItems.push(...candidates);
+
   mkdirSync(dirname(CACHE_PATH), { recursive: true });
   writeFileSync(CACHE_PATH, JSON.stringify(cachedItems, null, 2));
   return cachedItems;

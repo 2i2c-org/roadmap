@@ -140,6 +140,19 @@
   padding: 0.2rem 0 0.5rem 2.5rem !important;
 }
 
+/* GitHub initiative link */
+.issue-board-github-link {
+  margin: 0.3rem 0 0.2rem;
+  font-size: 0.8rem;
+}
+
+/* Sub-issues header */
+.issue-board-subissues-header {
+  font-size: 0.8rem;
+  margin: 0.5rem 0 0.1rem;
+  color: #555;
+}
+
 /* Expanded description and sub-issues */
 .issue-board-description,
 .issue-board-subissues {
