@@ -7,23 +7,28 @@ These are the initiatives that currently drive 2i2c's work. They mostly involve 
 - Interested in funding something? [Fill out our funding interest form](https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform).
 :::
 
-+++ {"class": "col-page-inset"}
++++ {"class": "col-page-inset in-flight"}
 
-```{searchfilter} .issue-board-item
-```
 
 ## 🚀 In-Flight Initiatives
 
 These are driving our work right now...
 
+```{searchfilter} .in-flight .issue-board-item
+```
 :::{issue-board} P&S Initiatives in flight
 :::
 
 Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
 
++++ {"class": "col-page-inset upcoming"}
+
 ## 📋 Upcoming Initiatives
 
 We'll work on these next as we finish up In-Flight initiatives...
+
+```{searchfilter} .upcoming .issue-board-item
+```
 
 :::{issue-board} Upcoming P&S initiatives
 :::

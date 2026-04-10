@@ -10,6 +10,7 @@ project:
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-issue-link%402026-02-09/index.mjs
     - https://github.com/jupyter-book/myst-plugins/releases/download/github-handle-links%402026-02-09/index.mjs
     - https://raw.githubusercontent.com/jupyter-book/myst-plugins/main/plugins/emoji-shortcodes/emoji-shortcodes.mjs
+    - https://github.com/jupyter-book/myst-plugins/releases/download/footer-latest/index.mjs
 site:
   template: book-theme
   nav:
@@ -32,3 +33,5 @@ site:
     hide_toc: true
     hide_outline: true
     style: style/custom.css
+  parts:
+    footer: _site/footer.md
