@@ -8,12 +8,8 @@ Interested in funding something? [Fill out our funding interest form](https://do
 :::
 
 
-+++ {"class": "col-page-inset"}
-
 ```{searchfilter} .issue-board-item
 ```
-
-+++ {"class": "col-page-inset"}
 
 :::{issue-board} Candidate
 :::

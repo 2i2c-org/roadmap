@@ -7,7 +7,7 @@ These are the initiatives that currently drive 2i2c's work. They mostly involve 
 - Interested in funding something? [Fill out our funding interest form](https://docs.google.com/forms/d/e/1FAIpQLScItiSZ9l2cqtpw5T3bVejFIQ3-cz15EESt_P3PczUWMScXTA/viewform).
 :::
 
-+++ {"class": "col-page-inset in-flight"}
++++ {"class": "in-flight"}
 
 
 ## 🚀 In-Flight Initiatives
@@ -21,7 +21,7 @@ These are driving our work right now...
 
 Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
 
-+++ {"class": "col-page-inset upcoming"}
++++ {"class": "upcoming"}
 
 ## 📋 Upcoming Initiatives
 

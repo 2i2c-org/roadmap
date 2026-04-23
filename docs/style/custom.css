@@ -10,6 +10,17 @@
   margin-top: 0.5rem;
 }
 
+/**
+ * Make all text on the page a bit wider by applying a wider grid column
+ */
+.article-grid .myst-fm-block {
+	grid-column: page-inset;
+}
+
+.article-grid > * {
+	grid-column: page-inset;
+}
+
 /* List view whitespace etc*/
 .issue-board {
   padding-left: 0;
