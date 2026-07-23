@@ -15,4 +15,6 @@ links:
 icons:
   github: https://github.com/2i2c-org
   bluesky: https://bsky.app/profile/2i2c.org
+
+copyright: Last updated {{BUILD_DATE}} &middot; <a href="{{BUILD_URL}}">build status</a>
 ```

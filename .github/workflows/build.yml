@@ -33,6 +33,10 @@ jobs:
       - name: Install nox
         run: uv tool install nox
 
+      - name: Stamp last-updated footer
+        run: |
+          sed -i "s|{{BUILD_DATE}}|$(date -u +'%Y-%m-%d %H:%M UTC')|; s|{{BUILD_URL}}|${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|" docs/_site/footer.md
+
       - name: Build docs
         run: uv tool run nox -s docs
 
