@@ -21,7 +21,9 @@ const issueBoardDirective = {
       return [];
     }
 
-    let filtered = allItems.filter((item) => item.status === data.arg);
+    let filtered = allItems.filter(
+      (item) => item.status.toLowerCase() === data.arg.toLowerCase(),
+    );
 
     // "Done" items: only show completed (not duplicated/not-planned), newest first
     if (data.arg === "Done") {

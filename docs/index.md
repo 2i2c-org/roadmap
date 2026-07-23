@@ -16,7 +16,7 @@ These are driving our work right now...
 
 ```{searchfilter} .in-flight .issue-board-item
 ```
-:::{issue-board} P&S Initiatives in flight
+:::{issue-board} P&S Initiatives In Flight
 :::
 
 Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
@@ -30,7 +30,7 @@ We'll work on these next as we finish up In-Flight initiatives...
 ```{searchfilter} .upcoming .issue-board-item
 ```
 
-:::{issue-board} Upcoming P&S initiatives
+:::{issue-board} Upcoming P&S Initiatives
 :::
 
 Check out [Candidate Initiatives »](./candidates.md) for a list of initiatives for which we're seeking endorsement or co-funding.
